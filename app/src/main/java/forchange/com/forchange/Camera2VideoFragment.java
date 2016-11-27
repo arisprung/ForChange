@@ -44,8 +44,10 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Vibrator;
@@ -67,6 +69,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -237,6 +240,7 @@ public class Camera2VideoFragment extends Fragment
     private String mNextVideoAbsolutePath;
     private CaptureRequest.Builder mPreviewBuilder;
     private Surface mRecorderSurface;
+    private MediaPlayer mediaPlayer;
 
     public static Camera2VideoFragment newInstance() {
         return new Camera2VideoFragment();
@@ -302,6 +306,8 @@ public class Camera2VideoFragment extends Fragment
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 11, 17, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         TextView tv=(TextView)view.findViewById(R.id.lick_text);
         tv.setText(str);
+        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.dna_2);
+        mediaPlayer.start();
 //        LinearLayout mDrawingPad=(LinearLayout)view.findViewById(R.id.view_drawing_pad);
 //       // startRecordingVideo();
 //        dv = new DrawingView(getActivity().getApplicationContext());
@@ -322,12 +328,15 @@ public class Camera2VideoFragment extends Fragment
 
                 long eventDuration = motionEvent.getEventTime() - motionEvent.getDownTime();
 
-                if(eventDuration >= 2000){
+                if(eventDuration >= 3000){
                     if(!mStartNewActivity){
+                        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(1000);
                         mStartNewActivity = true;
                         Log.d("TouchTest", "Touch up");
                         Log.d("TouchTest", "Touch up");
                         stopRecordingVideo();
+                        mediaPlayer.stop();
                         getActivity().finish();
 
                         startActivity(new Intent(getActivity(),CalculatingActivity.class));
@@ -335,7 +344,7 @@ public class Camera2VideoFragment extends Fragment
 
                 }else{
                     if (motionEvent.getAction() == android.view.MotionEvent.ACTION_UP) {
-                        Toast.makeText(getActivity(),"You need to put tongue on screen for more then 2 seconds for test to work",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"You need to put tongue on screen for 3 seconds for test to work",Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -693,7 +702,8 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        return context.getExternalFilesDir(null).getAbsolutePath() + "/forchange_video.mp4";
+        return Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "DCIM/Camera/orchange_video.mp4";
     }
 
     private void startRecordingVideo() {

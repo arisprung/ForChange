@@ -1,28 +1,42 @@
 package forchange.com.forchange;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v13.app.FragmentCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
-
-import static forchange.com.forchange.R.id.share;
+import java.io.File;
 
 /**
  * Created by arisprung on 11/19/16.
  */
 
 public class VideoActivity extends Activity  implements MediaPlayer.OnCompletionListener {
-
+    private static final String FRAGMENT_DIALOG = "dialog";
     private VideoView mVV;
+    private static final String[] READ_EXTERNAL_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
 
+    };
     private Button mShare;
-
+    private MediaPlayer mediaPlayer;
+    private static final int REQUEST_VIDEO_PERMISSIONS = 2;
     @Override
     public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -33,12 +47,116 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Downloaded video to SD card",Toast.LENGTH_SHORT).show();
+
+                sendFile();
+
+
             }
         });
 
+        mediaPlayer = MediaPlayer.create(VideoActivity.this, R.raw.dna_3);
+        mediaPlayer.start();
+//
+//        if (!hasPermissionsGranted(READ_EXTERNAL_STORAGE)) {
+//            requestVideoPermissions();
+//            return;
+//        }
+    }
+
+    private void sendFile() {
+
+        Toast.makeText(getApplicationContext(),"Downloaded video to Gallery",Toast.LENGTH_SHORT).show();
+        File file = new File(getVideoFilePath());  //
+        MediaScannerConnection.scanFile(getApplicationContext(), new String[] { file.getAbsolutePath() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+
+                        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        intent.setData(uri);
+                        sendBroadcast(intent);
+
+
+                    }
+                });
 
     }
+
+
+    private boolean hasPermissionsGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (android.support.v4.app.ActivityCompat.checkSelfPermission(VideoActivity.this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets whether you should show UI with rationale for requesting permissions.
+     *
+     * @param permissions The permissions your app wants to request.
+     * @return Whether you can show permission rationale UI.
+     */
+    private boolean shouldShowRequestPermissionRationale(String[] permissions) {
+        for (String permission : permissions) {
+            if (android.support.v13.app.ActivityCompat.shouldShowRequestPermissionRationale(VideoActivity.this, permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+    }
+
+    /**
+     * Requests permissions needed for recording video.
+     */
+    private void requestVideoPermissions() {
+        if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
+            new ConfirmationDialog().show(getFragmentManager(), FRAGMENT_DIALOG);
+        } else {
+            android.support.v13.app.ActivityCompat.requestPermissions(this, READ_EXTERNAL_STORAGE, REQUEST_VIDEO_PERMISSIONS);
+        }
+    }
+
+    public static class ConfirmationDialog extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Fragment parent = getParentFragment();
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.permission_request)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FragmentCompat.requestPermissions(parent, READ_EXTERNAL_STORAGE,
+                                    REQUEST_VIDEO_PERMISSIONS);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    parent.getActivity().finish();
+                                }
+                            })
+                    .create();
+        }
+
+    }
+
+
+
 
     @Override
     protected void onResume() {
@@ -71,7 +189,8 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     }
 
     private String getVideoFilePath() {
-        return getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/forchange_video.mp4";
+        return Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "DCIM/Camera/orchange_video.mp4";
     }
 
     private void shareService() {
@@ -83,4 +202,12 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(chooser);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.stop();
+    }
+
+
 }

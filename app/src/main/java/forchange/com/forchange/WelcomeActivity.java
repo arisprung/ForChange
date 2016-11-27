@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +30,9 @@ public class WelcomeActivity extends Activity {
     };
     private static final String FRAGMENT_DIALOG = "dialog";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
+
+    private MediaPlayer mediaPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,7 @@ public class WelcomeActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mediaPlayer.stop();
                 finish();
                 startActivity(new Intent(getApplicationContext(),CameraActivity.class));
             }
@@ -46,6 +51,18 @@ public class WelcomeActivity extends Activity {
             requestVideoPermissions();
             return;
         }
+
+
+        try
+        {
+            mediaPlayer = MediaPlayer.create(WelcomeActivity.this, R.raw.dna_1);
+            mediaPlayer.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
     }
 
 
