@@ -26,7 +26,9 @@ public class WelcomeActivity extends Activity {
     private static final String[] VIDEO_PERMISSIONS = {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.VIBRATE
+            Manifest.permission.VIBRATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
     private static final String FRAGMENT_DIALOG = "dialog";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
@@ -42,7 +44,11 @@ public class WelcomeActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaPlayer.stop();
+
+                if(mediaPlayer != null){
+                    mediaPlayer.stop();
+                }
+
                 finish();
                 startActivity(new Intent(getApplicationContext(),CameraActivity.class));
             }
@@ -135,5 +141,13 @@ public class WelcomeActivity extends Activity {
                     .create();
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+        }
     }
 }

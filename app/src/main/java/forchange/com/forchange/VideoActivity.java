@@ -6,28 +6,40 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v13.app.FragmentCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Random;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /**
  * Created by arisprung on 11/19/16.
  */
 
-public class VideoActivity extends Activity  implements MediaPlayer.OnCompletionListener {
+public class VideoActivity extends Activity implements MediaPlayer.OnCompletionListener {
     private static final String FRAGMENT_DIALOG = "dialog";
     private VideoView mVV;
     private static final String[] READ_EXTERNAL_STORAGE = {
@@ -37,13 +49,14 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     private Button mShare;
     private MediaPlayer mediaPlayer;
     private static final int REQUEST_VIDEO_PERMISSIONS = 2;
+
     @Override
     public void onCreate(Bundle b) {
         super.onCreate(b);
 
         setContentView(R.layout.videoplayer);
 
-        ImageView view = (ImageView)findViewById(R.id.download);
+        ImageView view = (ImageView) findViewById(R.id.download);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,21 +78,30 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
 
     private void sendFile() {
 
-        Toast.makeText(getApplicationContext(),"Downloaded video to Gallery",Toast.LENGTH_SHORT).show();
-        File file = new File(getVideoFilePath());  //
-        MediaScannerConnection.scanFile(getApplicationContext(), new String[] { file.getAbsolutePath() }, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
-
-                        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                        intent.setData(uri);
-                        sendBroadcast(intent);
+        File f = new File(getVideoFilePath());
+        String s = f.getAbsolutePath();
+        if (f.exists()) {
+            Toast.makeText(getApplicationContext(),"Downloaded video to Gallery",Toast.LENGTH_SHORT).show();
+            MediaScannerConnection.scanFile(getApplicationContext(), new String[] { f.getAbsolutePath() }, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
 
 
-                    }
-                });
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+
+//                        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                        intent.setData(uri);
+//                        sendBroadcast(intent);
+
+                            Log.d("","");
+
+
+                        }
+                    });
+        }
+        //sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageAdded)));
+
+
 
     }
 
@@ -156,14 +178,12 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        mShare = (Button)findViewById(R.id.share);
+        mShare = (Button) findViewById(R.id.share);
 
-        mVV = (VideoView)findViewById(R.id.videoView1);
+        mVV = (VideoView) findViewById(R.id.videoView1);
         getWindow().setBackgroundDrawableResource(android.R.color.white);
 
         mVV.setVideoPath(getVideoFilePath());
@@ -186,9 +206,12 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         //finish();
+
+
     }
 
     private String getVideoFilePath() {
+
         return Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + "DCIM/Camera/orchange_video.mp4";
     }
@@ -196,7 +219,7 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     private void shareService() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "I just found out my genetic DNA on my mobile! #ForChange2016 Find out yours:"  + "\n"
+        intent.putExtra(Intent.EXTRA_TEXT, "I just found out my genetic DNA on my mobile! #ForChange2016 Find out yours:" + "\n"
                 + "http://purednatest.wixsite.com/purednatest");
         Intent chooser = Intent.createChooser(intent, "Share app");
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -206,7 +229,9 @@ public class VideoActivity extends Activity  implements MediaPlayer.OnCompletion
     @Override
     protected void onStop() {
         super.onStop();
-        mediaPlayer.stop();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
     }
 
 

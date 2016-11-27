@@ -70,7 +70,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -336,7 +341,6 @@ public class Camera2VideoFragment extends Fragment
                         Log.d("TouchTest", "Touch up");
                         Log.d("TouchTest", "Touch up");
                         stopRecordingVideo();
-                        mediaPlayer.stop();
                         getActivity().finish();
 
                         startActivity(new Intent(getActivity(),CalculatingActivity.class));
@@ -699,11 +703,20 @@ public class Camera2VideoFragment extends Fragment
                 break;
         }
         mMediaRecorder.prepare();
+
     }
 
     private String getVideoFilePath(Context context) {
         return Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + "DCIM/Camera/orchange_video.mp4";
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+        }
     }
 
     private void startRecordingVideo() {
@@ -978,10 +991,14 @@ public class Camera2VideoFragment extends Fragment
                 Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
+                if(mediaPlayer != null){
+                    mediaPlayer.stop();
+                }
                 Log.d("TouchTest", "Touch up");
                 Log.d("TouchTest", "Touch up");
                 stopRecordingVideo();
                 getActivity().finish();
+
 
                 startActivity(new Intent(getActivity(),CalculatingActivity.class));
             }else{
