@@ -18,6 +18,7 @@
         <activity android:name="forchange.com.forchange.VideoActivity"
             android:screenOrientation="portrait"
             >
+
         </activity>
         <activity android:name="forchange.com.forchange.CameraActivity"
             android:screenOrientation="portrait"

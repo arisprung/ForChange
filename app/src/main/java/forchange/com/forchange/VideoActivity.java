@@ -69,17 +69,11 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
 
         mediaPlayer = MediaPlayer.create(VideoActivity.this, R.raw.dna_3);
         mediaPlayer.start();
-//
-//        if (!hasPermissionsGranted(READ_EXTERNAL_STORAGE)) {
-//            requestVideoPermissions();
-//            return;
-//        }
+
     }
 
     private void sendFile() {
-
         File f = new File(getVideoFilePath());
-        String s = f.getAbsolutePath();
         if (f.exists()) {
             Toast.makeText(getApplicationContext(),"Downloaded video to Gallery",Toast.LENGTH_SHORT).show();
             MediaScannerConnection.scanFile(getApplicationContext(), new String[] { f.getAbsolutePath() }, null,
@@ -89,9 +83,6 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
                         @Override
                         public void onScanCompleted(String path, Uri uri) {
 
-//                        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//                        intent.setData(uri);
-//                        sendBroadcast(intent);
 
                             Log.d("","");
 
