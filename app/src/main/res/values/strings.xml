@@ -6,4 +6,6 @@
     <string name="permission_request">This sample needs permission for camera and audio recording.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="app_name">DNA test</string>
+    <string name="sign_up_term_of_use">By clicking on the \'Start\' button, you agree\nto the following Terms &amp; Conditions</string>
+
 </resources>

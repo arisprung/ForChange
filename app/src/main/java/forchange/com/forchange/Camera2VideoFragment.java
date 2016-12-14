@@ -245,7 +245,7 @@ public class Camera2VideoFragment extends Fragment
     private String mNextVideoAbsolutePath;
     private CaptureRequest.Builder mPreviewBuilder;
     private Surface mRecorderSurface;
-    private MediaPlayer mediaPlayer;
+    //private MediaPlayer mediaPlayer;
 
     public static Camera2VideoFragment newInstance() {
         return new Camera2VideoFragment();
@@ -311,8 +311,8 @@ public class Camera2VideoFragment extends Fragment
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 11, 17, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         TextView tv=(TextView)view.findViewById(R.id.lick_text);
         tv.setText(str);
-        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.dna_2);
-        mediaPlayer.start();
+//        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.dna_2);
+//        mediaPlayer.start();
 //        LinearLayout mDrawingPad=(LinearLayout)view.findViewById(R.id.view_drawing_pad);
 //       // startRecordingVideo();
 //        dv = new DrawingView(getActivity().getApplicationContext());
@@ -711,13 +711,13 @@ public class Camera2VideoFragment extends Fragment
                 + File.separator + "DCIM/Camera/orchange_video.mp4";
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(mediaPlayer != null){
-            mediaPlayer.stop();
-        }
-    }
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        if(mediaPlayer != null){
+//            mediaPlayer.stop();
+//        }
+//    }
 
     private void startRecordingVideo() {
        // Toast.makeText(getActivity(),"Recording",Toast.LENGTH_SHORT).show();
@@ -991,9 +991,9 @@ public class Camera2VideoFragment extends Fragment
                 Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
-                if(mediaPlayer != null){
-                    mediaPlayer.stop();
-                }
+//                if(mediaPlayer != null){
+//                    mediaPlayer.stop();
+//                }
                 Log.d("TouchTest", "Touch up");
                 Log.d("TouchTest", "Touch up");
                 stopRecordingVideo();

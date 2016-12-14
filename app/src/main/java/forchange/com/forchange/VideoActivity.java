@@ -47,7 +47,7 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
 
     };
     private Button mShare;
-    private MediaPlayer mediaPlayer;
+   // private MediaPlayer mediaPlayer;
     private static final int REQUEST_VIDEO_PERMISSIONS = 2;
 
     @Override
@@ -67,8 +67,8 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
             }
         });
 
-        mediaPlayer = MediaPlayer.create(VideoActivity.this, R.raw.dna_3);
-        mediaPlayer.start();
+//        mediaPlayer = MediaPlayer.create(VideoActivity.this, R.raw.dna_3);
+//        mediaPlayer.start();
 
     }
 
@@ -217,13 +217,13 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
         startActivity(chooser);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//        }
+//    }
 
 
 }

@@ -10,11 +10,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -32,8 +41,8 @@ public class WelcomeActivity extends Activity {
     };
     private static final String FRAGMENT_DIALOG = "dialog";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
-
-    private MediaPlayer mediaPlayer;
+    private TextView terms;
+    //private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +50,15 @@ public class WelcomeActivity extends Activity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.welcome_layout);
         Button button = (Button)findViewById(R.id.start);
+         terms = (TextView)findViewById(R.id.terms);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(mediaPlayer != null){
-                    mediaPlayer.stop();
-                }
+//                if(mediaPlayer != null){
+//                    mediaPlayer.stop();
+//                }
 
                 finish();
                 startActivity(new Intent(getApplicationContext(),CameraActivity.class));
@@ -58,17 +69,26 @@ public class WelcomeActivity extends Activity {
             return;
         }
 
-
-        try
-        {
-            mediaPlayer = MediaPlayer.create(WelcomeActivity.this, R.raw.dna_1);
-            mediaPlayer.start();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        initSpannableText();
 
 
+//        try
+//        {
+//            mediaPlayer = MediaPlayer.create(WelcomeActivity.this, R.raw.dna_1);
+//            mediaPlayer.start();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
+
+
+    }
+
+    private void initSpannableText() {
+        SpannableString ss = new SpannableString(getResources().getString(R.string.sign_up_term_of_use));
+        ss.setSpan(new myClickableSpan(1), 62, 80, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        terms.setText(ss);
+        terms.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
 
@@ -143,11 +163,32 @@ public class WelcomeActivity extends Activity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(mediaPlayer != null){
-            mediaPlayer.stop();
+    public class myClickableSpan extends ClickableSpan {
+        int pos;
+
+        public myClickableSpan(int position) {
+            this.pos = position;
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setUnderlineText(true);
+
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Log.e("","");
+//            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+           startActivity(new Intent(getApplicationContext(),TermsActivity.class));
         }
     }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        if(mediaPlayer != null){
+//            mediaPlayer.stop();
+//        }
+//    }
 }

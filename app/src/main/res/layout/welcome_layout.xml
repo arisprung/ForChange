@@ -48,12 +48,26 @@
         android:layout_height="wrap_content"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="@dimen/DP6"
         android:text="START"
+        android:layout_above="@+id/terms"
         style="@style/ForChangeButton"/>
+
+    <TextView
+        android:id="@+id/terms"
+        android:layout_width="wrap_content"
+        android:textSize="10sp"
+        android:textColor="@android:color/white"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/DP6"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="By clicking on the 'Start' button, you agree\nto the following Terms  Conditions"
+        android:layout_height="wrap_content" />
+
+
 
     <ImageView
         android:id="@+id/image"

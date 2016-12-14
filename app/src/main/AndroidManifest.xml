@@ -20,6 +20,13 @@
             >
 
         </activity>
+        <activity android:name="forchange.com.forchange.TermsActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+
+
         <activity android:name="forchange.com.forchange.CameraActivity"
             android:screenOrientation="portrait"
             >
