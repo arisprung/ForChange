@@ -202,16 +202,16 @@ public class VideoActivity extends Activity implements MediaPlayer.OnCompletionL
     }
 
     private String getVideoFilePath() {
-
+        String strFile = this.getIntent().getStringExtra("file_name");
         return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "DCIM/Camera/orchange_video.mp4";
+                + File.separator + strFile;
     }
 
     private void shareService() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "I just found out my genetic DNA on my mobile! #ForChange2016 Find out yours:" + "\n"
-                + "http://purednatest.wixsite.com/purednatest");
+        intent.putExtra(Intent.EXTRA_TEXT, "I just found out my genetic DNA on my mobile! Find out yours:" + "\n"
+                + "http://www.purednatest.com");
         Intent chooser = Intent.createChooser(intent, "Share app");
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(chooser);

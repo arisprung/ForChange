@@ -13,19 +13,24 @@ import android.widget.ImageView;
 
 public class CalculatingActivity extends Activity {
     AnimationDrawable rocketAnimation;
-
+    String strFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calculate_layout);
+         strFile = getIntent().getStringExtra("file_name");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getApplicationContext(),VideoActivity.class));
+
+                Intent intent = new Intent(getApplicationContext(),VideoActivity.class);
+                intent.putExtra("file_name",strFile);
+                startActivity(intent);
                 finish();
             }
         }, 3000);
+
 
         ImageView rocketImage = (ImageView) findViewById(R.id.calculate_image_animate);
         rocketImage.setBackgroundResource(R.drawable.animation_calculatibg);

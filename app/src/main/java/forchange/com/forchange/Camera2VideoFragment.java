@@ -93,7 +93,7 @@ public class Camera2VideoFragment extends Fragment
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
     private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
-
+    String strFileName;
     private DrawingView dv;
     private Paint mPaint;
     private boolean mStartNewActivity = false;
@@ -342,8 +342,9 @@ public class Camera2VideoFragment extends Fragment
                         Log.d("TouchTest", "Touch up");
                         stopRecordingVideo();
                         getActivity().finish();
-
-                        startActivity(new Intent(getActivity(),CalculatingActivity.class));
+                        Intent intent = new Intent(getActivity(),CalculatingActivity.class);
+                        intent.putExtra("file_name",strFileName);
+                        startActivity(intent);
                     }
 
                 }else{
@@ -707,8 +708,10 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
+
+         strFileName = "DCIM/Camera/orchange_video"+System.currentTimeMillis()+".mp4";
         return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "DCIM/Camera/orchange_video.mp4";
+                + File.separator + strFileName;
     }
 
 //    @Override
@@ -999,8 +1002,10 @@ public class Camera2VideoFragment extends Fragment
                 stopRecordingVideo();
                 getActivity().finish();
 
+                Intent intent = new Intent(getActivity(),CalculatingActivity.class);
+                intent.putExtra("file_name",strFileName);
+                startActivity(intent);
 
-                startActivity(new Intent(getActivity(),CalculatingActivity.class));
             }else{
                 if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                     Toast.makeText(getActivity(),"You need to put tongue on screen for more then 2 seconds for test to work",Toast.LENGTH_SHORT).show();

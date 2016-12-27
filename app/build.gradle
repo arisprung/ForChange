@@ -22,7 +22,7 @@ android {
         applicationId "forchange.com.forchange"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 2
+        versionCode 4
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
